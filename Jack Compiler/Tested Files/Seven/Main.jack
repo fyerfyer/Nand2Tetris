@@ -1,0 +1,33 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/11/Seven/Main.jack
+/**
+ * Computes the value of 1 + (2 * 3) and prints the result
+ * at the top-left of the screen.  
+ */
+class Main {
+   field int a, b;
+   static int c, d;
+
+   constructor Main new() {
+      return this;
+   }
+
+   method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   function int func1() {
+      var int e;
+      var int f;
+      return 1;
+   }
+
+   method int method1() {
+      var char g;
+      var char h;
+      return 1;
+   }
+}

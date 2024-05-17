@@ -1,0 +1,652 @@
+function Player.new 0
+push constant 5
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push argument 1
+pop this 1
+push constant 10
+pop this 2
+push constant 1
+pop this 3
+push constant 10
+pop this 4
+push pointer 0
+call Player.draw 1
+pop temp 0
+push pointer 0
+return
+function Player.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Player.getPosx 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Player.getPosy 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Player.getAtk 0
+push argument 0
+pop pointer 0
+push this 3
+return
+function Player.getHealth 0
+push argument 0
+pop pointer 0
+push this 2
+return
+function Player.getSize 0
+push argument 0
+pop pointer 0
+push this 4
+return
+function Player.draw 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 4
+add
+push this 1
+push this 4
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Player.hide 0
+push argument 0
+pop pointer 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 4
+add
+push this 1
+push this 4
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Player.decreaseHealth 0
+push argument 0
+pop pointer 0
+push this 2
+push argument 1
+sub
+pop this 2
+push constant 0
+return
+function Player.increaseHealth 0
+push argument 0
+pop pointer 0
+push this 2
+push argument 1
+add
+pop this 2
+push constant 0
+return
+function Player.containPosition 0
+push argument 0
+pop pointer 0
+push argument 1
+push argument 3
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push argument 1
+push argument 5
+gt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+return
+label IF_FALSE1
+push argument 2
+push argument 4
+lt
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+return
+label IF_FALSE2
+push argument 2
+push argument 6
+gt
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push constant 0
+return
+label IF_FALSE3
+push constant 0
+not
+return
+function Player.containFruit 0
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+call Fruit.getPosx 1
+push argument 1
+call Fruit.getPosy 1
+push this 0
+push this 1
+push this 0
+push this 4
+add
+push this 1
+push this 4
+add
+call Player.containPosition 7
+return
+function Player.containSword 0
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+call Sword.getPosx 1
+push argument 1
+call Sword.getPosy 1
+push this 0
+push this 1
+push this 0
+push this 4
+add
+push this 1
+push this 4
+add
+call Player.containPosition 7
+return
+function Player.containPlayer 0
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+call Player.getPosx 1
+push argument 1
+call Player.getPosy 1
+push this 0
+push this 1
+push this 0
+push this 4
+add
+push this 1
+push this 4
+add
+call Player.containPosition 7
+return
+function Player.notContainSword 0
+push argument 0
+pop pointer 0
+push this 0
+push this 4
+add
+push argument 1
+call Sword.getPosx 1
+lt
+push argument 1
+call Sword.getPosx 1
+or
+push argument 1
+call Sword.getSize 1
+add
+push this 0
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 1
+push this 4
+add
+push argument 1
+call Sword.getPosy 1
+lt
+push argument 1
+call Sword.getPosy 1
+or
+push argument 1
+call Sword.getSize 1
+add
+push this 1
+lt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+not
+return
+label IF_FALSE1
+label IF_FALSE0
+push constant 0
+return
+function Player.notContainFruit 0
+push argument 0
+pop pointer 0
+push this 0
+push this 4
+add
+push argument 1
+call Fruit.getPosx 1
+lt
+push argument 1
+call Fruit.getPosx 1
+or
+push argument 1
+call Fruit.getSize 1
+add
+push this 0
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 1
+push this 4
+add
+push argument 1
+call Fruit.getPosy 1
+lt
+push argument 1
+call Fruit.getPosy 1
+or
+push argument 1
+call Fruit.getSize 1
+add
+push this 1
+lt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+not
+return
+label IF_FALSE1
+label IF_FALSE0
+push constant 0
+return
+function Player.attack 0
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+call Player.containPlayer 2
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 1
+push this 3
+call Player.decreaseHealth 2
+pop temp 0
+push this 2
+push argument 1
+call Player.getAtk 1
+sub
+pop this 2
+label IF_FALSE0
+push constant 0
+return
+function Player.eatFruit 0
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+call Player.containFruit 2
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 1
+call Fruit.getHasEaten 1
+push constant 0
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push argument 1
+call Fruit.eaten 1
+pop temp 0
+push this 2
+push constant 1
+add
+pop this 2
+label IF_FALSE1
+label IF_FALSE0
+push argument 1
+call Fruit.getHasEaten 1
+push pointer 0
+push argument 1
+call Player.notContainFruit 2
+and
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push argument 1
+call Fruit.grow 1
+pop temp 0
+label IF_FALSE2
+push argument 1
+call Fruit.getHasEaten 1
+not
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push argument 1
+call Fruit.draw 1
+pop temp 0
+label IF_FALSE3
+push constant 0
+return
+function Player.takeSword 0
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+call Player.containSword 2
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 1
+call Sword.getHasTaken 1
+push constant 0
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push argument 1
+call Sword.taken 1
+pop temp 0
+push this 3
+push constant 1
+add
+pop this 3
+label IF_FALSE1
+label IF_FALSE0
+push argument 1
+call Sword.getHasTaken 1
+push pointer 0
+push argument 1
+call Player.notContainSword 2
+and
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push argument 1
+call Sword.grow 1
+pop temp 0
+label IF_FALSE2
+push argument 1
+call Sword.getHasTaken 1
+not
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push argument 1
+call Sword.draw 1
+pop temp 0
+label IF_FALSE3
+push constant 0
+return
+function Player.moveUp 0
+push argument 0
+pop pointer 0
+push this 1
+push constant 1
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 4
+add
+push constant 1
+sub
+push this 0
+push this 4
+add
+push this 1
+push this 4
+add
+call Screen.drawRectangle 4
+pop temp 0
+push this 1
+push constant 2
+sub
+pop this 1
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 4
+add
+push this 1
+push constant 1
+add
+call Screen.drawRectangle 4
+pop temp 0
+push pointer 0
+push argument 3
+call Player.takeSword 2
+pop temp 0
+push pointer 0
+push argument 2
+call Player.eatFruit 2
+pop temp 0
+push pointer 0
+push argument 1
+call Player.attack 2
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Player.moveDown 0
+push argument 0
+pop pointer 0
+push this 1
+push this 4
+add
+push constant 254
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 4
+add
+push this 1
+push constant 1
+add
+call Screen.drawRectangle 4
+pop temp 0
+push this 1
+push constant 2
+add
+pop this 1
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 4
+add
+push constant 1
+sub
+push this 0
+push this 4
+add
+push this 1
+push this 4
+add
+call Screen.drawRectangle 4
+pop temp 0
+push pointer 0
+push argument 3
+call Player.takeSword 2
+pop temp 0
+push pointer 0
+push argument 2
+call Player.eatFruit 2
+pop temp 0
+push pointer 0
+push argument 1
+call Player.attack 2
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Player.moveLeft 0
+push argument 0
+pop pointer 0
+push this 0
+push constant 1
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 4
+add
+push constant 1
+sub
+push this 1
+push this 0
+push this 4
+add
+push this 1
+push this 4
+add
+call Screen.drawRectangle 4
+pop temp 0
+push this 0
+push constant 2
+sub
+pop this 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push constant 1
+add
+push this 1
+push this 4
+add
+call Screen.drawRectangle 4
+pop temp 0
+push pointer 0
+push argument 3
+call Player.takeSword 2
+pop temp 0
+push pointer 0
+push argument 2
+call Player.eatFruit 2
+pop temp 0
+push pointer 0
+push argument 1
+call Player.attack 2
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Player.moveRight 0
+push argument 0
+pop pointer 0
+push this 0
+push this 4
+add
+push constant 510
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push constant 1
+add
+push this 1
+push this 4
+add
+call Screen.drawRectangle 4
+pop temp 0
+push this 0
+push constant 2
+add
+pop this 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 4
+add
+push constant 1
+sub
+push this 1
+push this 0
+push this 4
+add
+push this 1
+push this 4
+add
+call Screen.drawRectangle 4
+pop temp 0
+push pointer 0
+push argument 3
+call Player.takeSword 2
+pop temp 0
+push pointer 0
+push argument 2
+call Player.eatFruit 2
+pop temp 0
+push pointer 0
+push argument 1
+call Player.attack 2
+pop temp 0
+label IF_FALSE0
+push constant 0
+return

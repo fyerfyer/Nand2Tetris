@@ -1,0 +1,74 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/5/CPU.hdl
+/**
+ * The Hack Central Processing unit (CPU).
+ * Parses the binary code in the instruction input and executes it according to the
+ * Hack machine language specification. In the case of a C-instruction, computes the
+ * function specified by the instruction. If the instruction specifies to read a memory
+ * value, the inM input is expected to contain this value. If the instruction specifies
+ * to write a value to the memory, sets the outM output to this value, sets the addressM
+ * output to the target address, and asserts the writeM output (when writeM = 0, any
+ * value may appear in outM).
+ * If the reset input is 0, computes the address of the next instruction and sets the
+ * pc output to that value. If the reset input is 1, sets pc to 0.
+ * Note: The outM and writeM outputs are combinational: they are affected by the
+ * instruction's execution during the current cycle. The addressM and pc outputs are
+ * clocked: although they are affected by the instruction's execution, they commit to
+ * their new values only in the next cycle.
+ */
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset==1) or continue executing
+                         // the current program (reset==0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write to M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+	//Decode the instruction
+    Mux16(a = instruction, b = ALUOut, sel = instruction[15], out = Ain);
+    Not(in = instruction[15], out = NotA);
+    Or(a = NotA, b = instruction[5] , out=loadA);
+
+    //if instructionOut[15] is 0, it means it should be loaded into the register
+    ARegister(in = Ain, load = loadA, out = Aout, out[0..14] = addressM);
+
+    //when it is an instruction, write M 
+    And(a = instruction[15], b = instruction[3], out = writeM);
+
+    //input of ALU
+    Mux16(a = Aout, b = inM, sel = instruction[12], out = AMout);
+    And(a = instruction[15], b = instruction[4], out = loadD);
+    DRegister(in = ALUOut, load = loadD, out = Dout);
+
+    //other judgement of ALU
+    And(a = instruction[11], b = instruction[15], out = zx);
+    And(a = instruction[10], b = instruction[15], out = nx);
+    Or(a = instruction[9], b = NotA, out = zy);
+    Or(a = instruction[8], b = NotA, out = ny);
+    And(a = instruction[7], b = instruction[15], out = f);
+    And(a = instruction[6], b = instruction[15], out = no);
+
+    ALU(x = Dout, y = AMout, zx = zx, nx = nx, zy = zy, ny = ny, f = f, no = no, out = outM, out = ALUOut, zr = zero, ng = nega);
+
+    Or(a = zero, b = nega, out = notpos);
+    Not(in = notpos, out = pos);
+
+    And(a = instruction[0], b = pos, out = out3);
+    And(a = instruction[1], b = zero, out = out2);
+    And(a = instruction[2], b = nega, out = out1);
+
+    Or(a = out1, b = out2, out = out12);
+    Or(a = out12, b = out3, out = out123);
+
+    And(a = out123, b = instruction[15], out = jump);
+
+    PC(in = Aout, load = jump, reset = reset, inc = true, out[0..14] = pc);
+}

@@ -1,0 +1,103 @@
+function Fruit.new 0
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push argument 1
+pop this 1
+push constant 0
+pop this 3
+push constant 2
+pop this 2
+push pointer 0
+call Fruit.draw 1
+pop temp 0
+push pointer 0
+return
+function Fruit.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Fruit.getHasEaten 0
+push argument 0
+pop pointer 0
+push this 3
+return
+function Fruit.getPosx 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Fruit.getPosy 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Fruit.getSize 0
+push argument 0
+pop pointer 0
+push this 2
+return
+function Fruit.draw 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Fruit.hide 0
+push argument 0
+pop pointer 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Fruit.eaten 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+pop this 3
+push constant 0
+return
+function Fruit.grow 0
+push argument 0
+pop pointer 0
+push constant 5000
+call Sys.wait 1
+pop temp 0
+push constant 0
+pop this 3
+push pointer 0
+call Fruit.draw 1
+pop temp 0
+push constant 0
+return

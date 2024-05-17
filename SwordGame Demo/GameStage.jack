@@ -1,0 +1,90 @@
+class GameStage {
+
+    field Fruit fruit;
+    field Sword sword;
+    field int direction1, direction2;    //control the move direction of p1 and p2
+
+    constructor GameStage new() {
+        let fruit = Fruit.new(50, 38);
+        let sword = Sword.new(20, 98);
+        let direction1 = 0;
+        let direction2 = 0;
+
+        return this;
+    }
+
+    method void dispose() {
+        do fruit.dispose();
+        do sword.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void movePlayer(Player p1, Player p2) {
+        //use this variable to store boolean value
+        //if true, then an attack occurs, we need to print
+
+        if (direction1 = 1) {do p1.moveUp(p2, fruit, sword);}
+        if (direction1 = 2) {do p1.moveDown(p2, fruit, sword);}
+        if (direction1 = 3) {do p1.moveLeft(p2, fruit, sword);}
+        if (direction1 = 4) {do p1.moveRight(p2, fruit, sword);}
+
+        if (direction2 = 1) {do p2.moveUp(p1, fruit, sword);}
+        if (direction2 = 2) {do p2.moveDown(p1, fruit, sword);}
+        if (direction2 = 3) {do p2.moveLeft(p1, fruit, sword);}
+        if (direction2 = 4) {do p2.moveRight(p1, fruit, sword);}
+
+        do Sys.wait(50);
+        return;
+    }
+
+    method void run() {
+        var char key;
+        var boolean exit;
+        var Player p1, p2;
+        let p1 = Player.new(100, 200);
+        let p2 = Player.new(200, 100);
+        let exit = false;
+
+        while (~exit) {
+            while ((key = 0)) {
+                let key = Keyboard.keyPressed();
+                do movePlayer(p1, p2);
+            }
+
+            //the movement of p1 is controlled by arrow key
+            if (key = 131) {let direction1 = 1;} //up arrow
+            if (key = 133) {let direction1 = 2;} //down arrow
+            if (key = 130) {let direction1 = 3;} //left arrow 
+            if (key = 132) {let direction1 = 4;} //right arrow 
+
+            //the movement of p2 is controlled by wasd key
+            if (key = 87) {let direction2 = 1;}  //W
+            if (key = 83) {let direction2 = 2;}  //S
+            if (key = 65) {let direction2 = 3;}  //A
+            if (key = 68) {let direction2 = 4;}  //D
+
+            //if z is pressed, quit
+            if (key = 90) {let exit = true;}
+
+            // if one of the player died, quit
+
+            if (p1.getHealth() < 1) {
+                do Output.printString("P2 wins!");
+                let exit = true;
+            } 
+
+            if (p2.getHealth() < 1) {
+                do Output.printString("P1 wins!");
+                let exit = true;
+            }
+
+            // waits for the key to be released
+            while (~(key = 0)) {
+                let key = Keyboard.keyPressed();
+                do movePlayer(p1, p2);
+            }
+        }
+        return;
+    }
+}

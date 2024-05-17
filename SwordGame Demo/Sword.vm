@@ -1,0 +1,106 @@
+function Sword.new 0
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push argument 1
+pop this 1
+push constant 4
+pop this 2
+push constant 0
+pop this 3
+push pointer 0
+call Sword.draw 1
+pop temp 0
+push pointer 0
+return
+function Sword.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Sword.getPosx 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Sword.getPosy 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Sword.getHasTaken 0
+push argument 0
+pop pointer 0
+push this 3
+return
+function Sword.getSize 0
+push argument 0
+pop pointer 0
+push this 2
+return
+function Sword.draw 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Sword.hide 0
+push argument 0
+pop pointer 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Sword.taken 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+pop this 3
+push pointer 0
+call Sword.hide 1
+pop temp 0
+push constant 0
+return
+function Sword.grow 0
+push argument 0
+pop pointer 0
+push constant 5000
+call Sys.wait 1
+pop temp 0
+push constant 0
+pop this 3
+push pointer 0
+call Sword.draw 1
+pop temp 0
+push constant 0
+return

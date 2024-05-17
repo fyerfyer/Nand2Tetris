@@ -1,0 +1,68 @@
+//The fruit in the maze
+//When a player gets it, he will gain 1 health
+
+class Fruit {
+    
+    field int posx, posy;    //the location of the fruit
+    field int size;          //the size of the rectangle representing fruit
+    field boolean hasEaten;  //if the fruit has been eaten by a player  
+
+    constructor Fruit new(int x, int y) {
+        let posx = x;
+        let posy = y;
+        let hasEaten = false;
+        let size = 2;
+
+        do draw();
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method boolean getHasEaten() {
+        return hasEaten;
+    }
+
+    method int getPosx() {
+        return posx;
+    }
+
+    method int getPosy() {
+        return posy;
+    }
+
+    method int getSize() {
+        return size;
+    }
+
+    //the fruit is just a little dot *
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(posx, posy, posx + size, posy + size);
+        return;
+    }
+
+    method void hide() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(posx, posy, posx + size, posy + size);
+        return;
+    }
+
+    //When a fruit is eaten, it will takes a moment to grow a new one
+    //so we hide the fruit during the period, and show it when it grows up again
+    method void eaten() {
+        let hasEaten = true;
+        return;
+    }
+
+    method void grow() {
+        do Sys.wait(5000);
+        let hasEaten = false;
+        do draw();
+        return;
+    }
+
+} 

@@ -1,0 +1,228 @@
+//the first player of this game
+class Player {
+
+    field int posx, posy;
+    field int health;      //the health of the player 
+    field int atk;         //the attack of the player
+    field int size;        //the size of the rectangle representing player
+
+    constructor Player new(int x, int y) {
+        let posx = x;
+        let posy = y;
+        let health = 10;
+        let atk = 1;
+        let size = 10;
+
+        do draw();
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method int getPosx() {
+        return posx;
+    }
+
+    method int getPosy() {
+        return posy;
+    }
+
+    method int getAtk() {
+        return atk;
+    }
+
+    method int getHealth() {
+        return health;
+    }
+
+    method int getSize() {
+        return size;
+    }
+ 
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(posx, posy, posx + size, posy + size);
+        return;
+    }
+
+    method void hide() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(posx, posy, posx + size, posy + size);
+        return;
+    }
+
+    //decrease the player's health
+    method void decreaseHealth(int x) {
+        let health = health - x;
+        return;
+    } 
+
+    method void increaseHealth(int x) {
+        let health = health + x;
+        return;
+    }
+
+    //return if a position is between the two given position
+    method boolean containPosition(int p0, int p1, int x0, int y0, int x1, int y1) {
+        // if (p0 > x0 & p0 < x1 & p1 > y0 & p1 < y1) {return true;}
+        // return false;
+        if (p0 < x0) {return false;}
+        if (p0 > x1) {return false;}
+        if (p1 < y0) {return false;}
+        if (p1 > y1) {return false;}
+        return true;
+    }
+
+    //return if a fruit is in the given range
+    method boolean containFruit(Fruit fruit) {
+        return (containPosition(fruit.getPosx(), fruit.getPosy(), posx, posy, posx + size, posy + size));
+    }
+
+    //return if a sword is in the given range
+    method boolean containSword(Sword sword) {
+        return (containPosition(sword.getPosx(), sword.getPosy(), posx, posy, posx + size, posy + size));
+    }
+
+    //return if a player is in the given range
+    method boolean containPlayer(Player player) {
+        return (containPosition(player.getPosx(), player.getPosy(), posx, posy, posx + size, posy + size));
+    }
+
+    method boolean notContainSword(Sword sword) {
+        if (posx + size < sword.getPosx() | sword.getPosx() + sword.getSize() < posx) {
+            if (posy + size < sword.getPosy() | sword.getPosy() + sword.getSize() < posy) {
+                return true;
+            }
+        }
+        return false;
+    } 
+
+    method boolean notContainFruit(Fruit fruit) {
+        if (posx + size < fruit.getPosx() | fruit.getPosx() + fruit.getSize() < posx) {
+            if (posy + size < fruit.getPosy() | fruit.getPosy() + fruit.getSize() < posy) {
+                return true;
+            }
+        }
+        return false;
+    } 
+
+    //the player attack p
+    //if an attack occurred, we return true and return the health of each player later on
+    method void attack(Player p) {
+        if (containPlayer(p)) {
+            do p.decreaseHealth(atk);
+            let health = health - p.getAtk();
+        }
+        return;
+    }
+
+    //if the player meets a fruit, he eats it 
+    method void eatFruit(Fruit fruit) {
+        if (containFruit(fruit)) {
+            if (fruit.getHasEaten() = false) {
+                do fruit.eaten();
+                let health = health + 1;
+            }
+        }
+        if (fruit.getHasEaten() & notContainFruit(fruit)) {do fruit.grow();}
+        if (~fruit.getHasEaten()) {do fruit.draw();}
+        return;
+    }
+
+    //if the player meets a sword, he takes it 
+    method void takeSword(Sword sword) {
+        if (containSword(sword)) {
+            if (sword.getHasTaken() = false) {
+                do sword.taken();
+                let atk = atk + 1;
+            }
+        }
+        if (sword.getHasTaken() & notContainSword(sword)) {do sword.grow();}
+        if (~sword.getHasTaken()) {do sword.draw();}
+        return;
+    }
+
+    method void moveUp(Player p, Fruit fruit, Sword sword) {
+        if (posy > 1) {
+            //first, do the movement
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posx, posy + size - 1, posx + size, posy + size);
+            let posy = posy - 2;
+            do Screen.setColor(true);
+            do Screen.drawRectangle(posx, posy, posx + size, posy + 1);
+
+            //take the sword and eat the fruit
+            do takeSword(sword);
+            do eatFruit(fruit);
+
+            //if there's an enemy, attack him
+            do attack(p);
+        }
+
+        return;
+    }
+
+    method void moveDown(Player p, Fruit fruit, Sword sword) {
+        if (posy + size < 254) {
+            //first, do the movement
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posx, posy, posx + size, posy + 1);
+            let posy = posy + 2;
+            do Screen.setColor(true);
+            do Screen.drawRectangle(posx, posy + size - 1, posx + size, posy + size);
+
+            //take the sword and eat the fruit
+            do takeSword(sword);
+            do eatFruit(fruit);
+
+            //if there's an enemy, attack him
+            do attack(p);
+        }
+
+        return;
+    }
+
+    method void moveLeft(Player p, Fruit fruit, Sword sword) {
+        if (posx > 1) {
+            //first, do the movement
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posx + size - 1, posy, posx + size, posy + size);
+            let posx = posx - 2;
+            do Screen.setColor(true);
+            do Screen.drawRectangle(posx, posy, posx + 1, posy + size);
+
+            //take the sword and eat the fruit
+            do takeSword(sword);
+            do eatFruit(fruit);
+
+            //if there's an enemy, attack him
+            do attack(p);
+        }
+
+        return;
+    }
+
+    method void moveRight(Player p, Fruit fruit, Sword sword) {
+        if (posx + size < 510) {
+            //first, do the movement
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posx, posy, posx + 1, posy + size);
+            let posx = posx + 2;
+            do Screen.setColor(true);
+            do Screen.drawRectangle(posx + size - 1, posy, posx + size, posy + size);
+
+            //take the sword and eat the fruit
+            do takeSword(sword);
+            do eatFruit(fruit);
+
+            //if there's an enemy, attack him
+            do attack(p);
+        }
+
+        return;
+    }
+
+}

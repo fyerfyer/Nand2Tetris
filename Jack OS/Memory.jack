@@ -1,0 +1,123 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+/**
+ * This library provides two services: direct access to the computer's main
+ * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
+ * consists of 32,768 words, each holding a 16-bit binary number.
+ */ 
+class Memory {
+    static Array ram;
+
+    static Array rest;
+    static Array curList;
+    static Array firstList;
+    static Array nextList;
+    static Array prevList;
+    static Array endOfHeap;
+
+    /** Initializes the class. */
+    function void init() {
+        let ram = 0;
+
+        let curList = 2048;
+
+        //the curLits[1] stores the occupied place
+        let curList[0] = 14334;
+        let curList[1] = 14334;
+
+        let firstList = curList;
+        let endOfHeap = 16384;
+
+        //previous the next of curList is endOfHeap
+        let nextList[curList] = endOfHeap;
+        
+        //and the prev of endOfHeap is curList
+        let prevList[endOfHeap] = curList;
+
+        return;
+    }
+
+    /** Returns the RAM value at the given address. */
+    function int peek(int address) {
+        return ram[address];
+    }
+
+    /** Sets the RAM value at the given address to the given value. */
+    function void poke(int address, int value) {
+        let ram[address] = value;
+        return;
+    }
+
+    /** Finds an available RAM block of the given size and returns
+     *  a reference to its base address. */
+    function int alloc(int size) {
+        var Array index;
+        var Array returnAddress;
+        let index = curList;
+
+        while (~ (index = endOfHeap)) {
+            if (index[0] > size + 2 & index[0] = size + 2) {
+                //if it is curList, we have to create a new freeList
+                if (index = curList) {
+                    let returnAddress = index;
+                    let index = index + size + 2;
+                    
+                    //update the next and prev freeList
+                    let nextList[returnAddress] = index;
+                    let prevList[index] = returnAddress;
+
+                    //update the curList
+                    let curList = index;
+
+                    //update the size of now and new current freeList
+                    let curList[0] = returnAddress[0] - size - 2;
+                    let curList[1] = size + 2
+                    let returnAddress[0] = 0;
+
+                    return returnAddress; 
+                } else { //else, it's a deAlloced freeList, and we don't have to update its prev and next, we just take its memory
+                    let index[0] = index[0] - size;
+                    return index;
+                }
+            }
+        }
+
+        //else, it's false
+        //I fail to figure out how to defrag ><
+    }
+
+    /** De-allocates the given object (cast as an array) by making
+     *  it available for future allocations. */
+    function void deAlloc(Array o) {
+        var Array index;
+        let index = firstList;
+
+        while (~ (index = endOfHeap)) {
+            //we find the o
+            if (index = o) {
+                //we first change the next and prev of its neighbour
+                if (~ (index = curList)) {
+                    let nextList[prevList[index]] = nextList[index];
+                    let prevList[nextList[index]] = prevList[index];
+                    
+                    //then we append this to the end of the freeList
+                    let nextList[curList] = index;
+                    let curList = index;
+
+                    //then we free the memory
+                    let curList[0] = curList[1] + curList[0];
+                    let curList[1] = 0;
+                    return;
+                } else { //else, it's the last freeList, we don't need to do anything
+                    let curList[0] = curList[1] + curList[0];
+                    let curList[1] = 0;
+                    return;
+                }
+            }
+        }
+    }  
+
+    //else, we can't find it  
+}

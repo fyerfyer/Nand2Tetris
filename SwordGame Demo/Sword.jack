@@ -1,0 +1,67 @@
+//the sword in the maze
+//When a player gets it, he will gain 1 attack
+class Sword {
+
+    field int posx, posy;      //the location of the sword
+    field int size;            //the size of the rectangle representing sword
+    field boolean hasTaken;    //if the sword has been taken by a player 
+
+    constructor Sword new(int x, int y) {
+        let posx = x;
+        let posy = y;
+        let size = 4;
+        let hasTaken = false;
+
+        do draw();
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method int getPosx() {
+        return posx;
+    }
+
+    method int getPosy() {
+        return posy;
+    }
+
+    method boolean getHasTaken() {
+        return hasTaken;
+    }
+
+    method int getSize() {
+        return size;
+    }
+
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(posx, posy, posx + size, posy + size);
+        return;
+    }
+
+    method void hide() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(posx, posy, posx + size, posy + size);
+        return;
+    }
+
+    //When a sword is taken, it will takes a moment to change for a new one
+    //so we hide the sword during the period, and show it when it change up again
+    method void taken() {
+        let hasTaken = true;
+        do hide();
+        return;
+    }
+
+    method void grow() {
+        do Sys.wait(5000);
+        let hasTaken = false;
+        do draw();
+        return;
+    }
+
+}

@@ -1,0 +1,22 @@
+function Main.new 0
+push constant 2
+call Memory.alloc 1
+pop pointer 0
+push pointer 0
+return
+function Main.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Main.func1 2
+push constant 1
+return
+function Main.method1 2
+push argument 0
+pop pointer 0
+push constant 1
+return
