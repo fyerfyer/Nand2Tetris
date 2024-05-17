@@ -1,4 +1,3 @@
-#! https://zhuanlan.zhihu.com/p/698414990
 # $8.8.$翻译器实现笔记
 
 ### 1. `local,argument,this,that,temp`的实现

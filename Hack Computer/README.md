@@ -1,4 +1,3 @@
-#! https://zhuanlan.zhihu.com/p/698414631
 # $5.5.$Hack计算机实现笔记
 ### 1.CPU实现
 
