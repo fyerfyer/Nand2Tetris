@@ -1,4 +1,7 @@
-&emsp;&emsp;分析器总体较为简单，在实现完分词器后，按照Jack语法递归构建解析树即可。不过在之后写编译器的过程中发现先前的分词器有些许问题，故记之。
+#! https://zhuanlan.zhihu.com/p/698417850
+# $10.9.$分析器实现笔记
+
+### 1.分词器
 
 &emsp;&emsp;实现分词器，容易想到先按照token进行分类：
 
@@ -120,7 +123,6 @@ if (isVarDec(keywordName)) {
     }
     break;
 }
-
 ```
 
 3. 函数的声明：
@@ -165,5 +167,26 @@ if (isSubroutineDec(keywordName)) {
     line = line.substring(varName.length());
     break;
 }
+```
 
+### 2.分析器
+&emsp;&emsp;在分析器中，我们使用经分词器处理过的文件来构建最终的.xml文件。由于对一个元素我们可能会生成多行代码，我们选择利用`ArrayList<String>`来存储每个元素产生的语句。当一个元素中包含了其他子元素时，我们**在调用处理子元素的方法、得到子元素的分析代码后，加入该元素的`ArrayList`即可**。这样，我们就可以通过**递归**调用来完成对程序的分析
+
+&emsp;&emsp;以`class`的分析为例，我们可以写出以下的代码框架：
+
+```Java
+private static ArrayList<String> compileClass() {
+    ArrayList<String> class_ = new ArrayList<>();
+
+    class_.add("<class>");
+    ......
+
+    //call method recursively
+    class_.addAll(compileClassVar());
+    class_.addAll(compileSubroutineDec());
+
+    ......
+    class_.add("</class>");
+    return class_;
+}
 ```
