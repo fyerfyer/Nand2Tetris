@@ -185,7 +185,7 @@ private static void dealFuncLCLVar() {
 #### &emsp;&emsp;$d.$`Symbol Table`最终构建
 &emsp;&emsp;有了上述方法的铺垫， 我们只需要在遇到对应的$token$时调用对应的方法即可。我们利用`private static String currentStringName`来记录当前读入的$token$，如果遇到了声明类或子程序的关键字，就跳转到对应的变量处理程序中：
 
-1. 当遇到`class`关键字，我们在忽略掉$class+className+\{ \;$后着手处理类变量：
+1. 当遇到`class`关键字，我们在忽略掉$class+className+\{$ 后着手处理类变量：
 
 ```Java
 //if we meet "class", then we call dealClass
