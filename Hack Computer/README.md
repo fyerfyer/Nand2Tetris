@@ -1,7 +1,7 @@
 # $5.5.$Hack计算机实现笔记
 ### 1.CPU实现
 
-![Alt text](image.png)
+![](image.png)
 
 #### &emsp;&emsp;$a.$指令识别
 
@@ -25,7 +25,7 @@
 
 #### &emsp;&emsp;$b.$`A`寄存器处理
 
-![Alt text](image-1.png)
+![](image-1.png)
 
 1. 输入的16位指令和ALU的输出经过`Mux16`作为`A`寄存器的输入：
 
@@ -50,7 +50,7 @@ ARegister(in = Ain, load = loadA, out = Aout, out[0..14] = addressM);
 
 #### &emsp;&emsp;$c.$ALU运算
 
-![Alt text](image-2.png)
+![](image-2.png)
 
 1. 我们先处理ALU的两个输入源，其中第二个输入源由`C`指令集的`instruction[12]`控制：
 
@@ -116,7 +116,7 @@ PC(in = Aout, load = jump, reset = reset, inc = true, out[0..14] = pc);
 
 ### 3.Hack计算机实现
 
-![Alt text](image-3.png)
+![](image-3.png)
 
 &emsp;&emsp;我们根据计算机的结构，对已有芯片进行接线即可：
 
