@@ -343,9 +343,9 @@ $$expression=term(op\;expression)$$
 ```Java
 //if the first character belongs unary op //then we skip it 
 String unaryOp = ""; 
-if (isOp(line.charAt(0))) { 
-	unaryOp = Character.toString(line.charAt(0)); 
-	line = line.substring(1); 
+if (isOp(line.charAt(0))) {
+    unaryOp = Character.toString(line.charAt(0)); 
+    line = line.substring(1); 
 }
 
 if (!unaryOp.isEmpty()) expression.add(VMWriter.writeUnaryOp(unaryOp));
@@ -540,49 +540,29 @@ pop that 0
 &emsp;&emsp;否则左侧表达式只能是一个普通的变量，我们将其`pop`即可：
 
 ```Java
-    private static ArrayList<String> compileLetStatement(String line) {
+private static ArrayList<String> compileLetStatement(String line) {
+    ArrayList<String> letstatement = new ArrayList<>();
+    line = line.substring(3);
+    String var1 = line.substring(0, line.indexOf("="));
+    String var2 = line.substring(line.indexOf("=") + 1, line.indexOf(";"));
 
-        ArrayList<String> letstatement = new ArrayList<>();
+    //case 1: array var + expression
+    if (var1.contains("[")) {
+        String exp1 = var1.substring(var1.indexOf("[") + 1, var1.indexOf("]"));
+        String name1 = var1.substring(0, var1.indexOf("["));
+        ArrayList<String> expression1 = compileExpression(exp1);
+        letstatement.addAll(expression1);
+        letstatement.add(VMWriter.writePush(SymbolTable.varKind(name1, curSubroutine.toString()), SymbolTable.varCount(name1, curSubroutine.toString())));
+        letstatement.add("add");
+        letstatement.addAll(compileExpression(var2));
+        letstatement.add(VMWriter.writePop("temp", 0));
+        letstatement.add(VMWriter.writePop("pointer", 1));
+        letstatement.add(VMWriter.writePush("temp", 0));
+        letstatement.add(VMWriter.writePop("that", 0));
 
-        line = line.substring(3);
-
-        String var1 = line.substring(0, line.indexOf("="));
-
-        String var2 = line.substring(line.indexOf("=") + 1, line.indexOf(";"));
-
-  
-
-        //case 1: array var + expression
-
-        if (var1.contains("[")) {
-
-            String exp1 = var1.substring(var1.indexOf("[") + 1, var1.indexOf("]"));
-
-            String name1 = var1.substring(0, var1.indexOf("["));
-
-  
-
-            ArrayList<String> expression1 = compileExpression(exp1);
-
-            letstatement.addAll(expression1);
-
-            letstatement.add(VMWriter.writePush(SymbolTable.varKind(name1, curSubroutine.toString()), SymbolTable.varCount(name1, curSubroutine.toString())));
-
-            letstatement.add("add");
-
-            letstatement.addAll(compileExpression(var2));
-
-            letstatement.add(VMWriter.writePop("temp", 0));
-
-            letstatement.add(VMWriter.writePop("pointer", 1));
-
-            letstatement.add(VMWriter.writePush("temp", 0));
-
-            letstatement.add(VMWriter.writePop("that", 0));
-
-            return letstatement;
-
-        }
+        return letstatement;
+    }
+}
 ```
 
 #### &emsp;&emsp;$e.$函数体模块设计&`if, while`处理手段
